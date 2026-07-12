@@ -2,10 +2,11 @@ import os
 import joblib
 import numpy as np
 import pandas as pd
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
-from huggingface_hub import hf_hub_download
+
+MODEL_PATH = os.path.join(os.path.dirname(__file__), "crp_model.joblib")
 
 app = FastAPI(title="LEWIF ML Service", version="1.0.0")
 
@@ -16,9 +17,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-_bundle = joblib.load(
-    hf_hub_download(repo_id="ParamFpv/lewif-crp-model", filename="crp_model.joblib")
-)
+_bundle = joblib.load(MODEL_PATH)
 _model = _bundle["model"]
 
 FEATURES = [
